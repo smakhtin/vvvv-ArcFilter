@@ -7,7 +7,7 @@
    </BOUNDS>
    <PIN pinname="Go To Position" visible="1">
    </PIN>
-   <PIN pinname="FilterTime" slicecount="1" values="9.9">
+   <PIN pinname="FilterTime" slicecount="1" values="1">
    </PIN>
    <PIN pinname="Position Out" visible="1">
    </PIN>
@@ -23,9 +23,9 @@
    </PIN>
    <PIN pinname="Y Output Value" visible="1">
    </PIN>
-   <PIN pinname="X Input Value" slicecount="1" values="0">
+   <PIN pinname="X Input Value" slicecount="1" values="1">
    </PIN>
-   <PIN pinname="Y Input Value" slicecount="1" values="0">
+   <PIN pinname="Y Input Value" slicecount="1" values="1">
    </PIN>
    </NODE>
    <LINK srcnodeid="1" srcpinname="Y Output Value" dstnodeid="0" dstpinname="Go To Position">
@@ -41,5 +41,25 @@
    </PIN>
    </NODE>
    <LINK srcnodeid="0" srcpinname="Position Out" dstnodeid="3" dstpinname="Y Input Value">
+   </LINK>
+   <NODE systemname="ArcFilter" filename="plugins\vvvv.Nodes.ArcFilter.dll" nodename="ArcFilter" componentmode="Hidden" id="4">
+   <BOUNDS type="Node" left="4095" top="1845" width="100" height="100">
+   </BOUNDS>
+   <PIN pinname="Position OutXYZ" visible="1">
+   </PIN>
+   <PIN pinname="Go To PositionXYZ" visible="1">
+   </PIN>
+   </NODE>
+   <NODE systemname="IOBox (Value Advanced)" nodename="IOBox (Value Advanced)" componentmode="InABox" id="6">
+   <BOUNDS type="Node" left="4080" top="3015" width="100" height="100">
+   </BOUNDS>
+   <BOUNDS type="Box" left="4080" top="3015" width="795" height="240">
+   </BOUNDS>
+   <PIN pinname="Y Input Value" visible="1">
+   </PIN>
+   </NODE>
+   <LINK srcnodeid="4" srcpinname="Position OutXYZ" dstnodeid="6" dstpinname="Y Input Value">
+   </LINK>
+   <LINK srcnodeid="1" srcpinname="Y Output Value" dstnodeid="4" dstpinname="Go To PositionXYZ">
    </LINK>
    </PATCH>

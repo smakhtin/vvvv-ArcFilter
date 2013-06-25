@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArcFilter", "ArcFilter\ArcFilter.csproj", "{7FC7A164-171F-4B55-BDAC-11BACD447173}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArcFilter", "ArcFilter.csproj", "{7FC7A164-171F-4B55-BDAC-11BACD447173}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

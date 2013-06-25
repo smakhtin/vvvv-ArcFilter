@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using VVVV.PluginInterfaces.V2;
 using VVVV.Utils.VMath;
+using SlimDX;
 
-namespace ArcFilter
+namespace vvvv.Nodes.ArcFilter
 {
 	public class ArcFilterInstance
 	{
@@ -14,7 +16,8 @@ namespace ArcFilter
 		public double Radius { get; set; }
 
 		public Vector3D Position { get; private set; }
-		private double FEndTime;
+		private double FStartTime;
+		private Vector3D FStartPosition;
 
 		public ArcFilterInstance()
 		{
@@ -28,13 +31,33 @@ namespace ArcFilter
 
 		public void Update(Vector3D targetPos, double frameTime)
 		{
-			if (!FTargetPos.Equals(targetPos))
+			if (FTargetPos != targetPos)
 			{
 				FTargetPos = targetPos;
-				FEndTime = frameTime;
+				FStartTime = frameTime;
+				FStartPosition = Position;
 			}
 
-			
+			var centerStart = FStartPosition - SystemCenter;
+			var centerEnd = FTargetPos - SystemCenter;
+
+			var centerStartEnd = centerEnd - centerStart;
+
+			var midPoint = centerStartEnd * 0.5 + centerStart;
+
+			var planeNormal = centerStart & centerEnd;
+			planeNormal = ~planeNormal;
+
+			var midStart = FStartPosition - midPoint;
+
+			var perpendicular = midStart & planeNormal;
+
+			perpendicular *= Radius;
+
+			//translate perpendicular to center
+			perpendicular += midPoint;
+
+			Position = FStartPosition + (FTargetPos - FStartPosition) * Math.Min((frameTime - FStartTime) / FilterTime, 1.0);
 		}
 	}
 
