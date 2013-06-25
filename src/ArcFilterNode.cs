@@ -47,12 +47,12 @@ namespace vvvv.Nodes.ArcFilter
 
 			var midPoint = centerStartEnd * 0.5 + centerStart;
 
-			var planeNormal = centerStart & centerEnd;
+			var planeNormal = centerStart.CrossRH(centerEnd);
 			planeNormal = ~planeNormal;
 
 			var midStart = FStartPosition - midPoint;
 
-			var perpendicular = midStart & planeNormal;
+			var perpendicular = midStart.CrossRH(planeNormal);
 
 			perpendicular *= Radius;
 
@@ -62,8 +62,8 @@ namespace vvvv.Nodes.ArcFilter
 			var startPerp = FStartPosition - perpendicular;
 			var endPerp = FTargetPos - perpendicular;
 
-			var yMult = startPerp & endPerp;
-			yMult = startPerp & yMult;
+			var yMult = startPerp.CrossRH(endPerp);
+			yMult = startPerp.CrossRH(yMult);
 			yMult = ~yMult;
 
 			var xMult = ~startPerp;
@@ -77,11 +77,13 @@ namespace vvvv.Nodes.ArcFilter
 			targetAngle = Math.Max(-1, Math.Min(targetAngle, 1));
 			targetAngle = Math.Acos(targetAngle);
 
+			var inDegrees = targetAngle*VMath.RadToDeg;
+
 			var mult = Math.Min((frameTime - FStartTime)/FilterTime, 1.0);
 			Angle = targetAngle*mult;
 
-			//var aproxTargetPos = FindPos(length, targetAngle, xMult, yMult, perpendicular);
-			//if (aproxTargetPos != FTargetPos) Angle *= -1;
+			var aproxTargetPos = FindPos(length, targetAngle, xMult, yMult, perpendicular);
+			if (aproxTargetPos != FTargetPos) Angle *= -1;
 
 			//Position = FStartPosition + (FTargetPos - FStartPosition) * Math.Min((frameTime - FStartTime) / FilterTime, 1.0);
 
