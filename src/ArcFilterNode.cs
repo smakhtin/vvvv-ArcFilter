@@ -18,7 +18,7 @@ namespace vvvv.Nodes.ArcFilter
 		public double Radius { get; set; }
 
 		public Vector3D Position { get; private set; }
-		public double Angle { get; set; }
+		public double Angle { get; private set; }
 
 		public ArcFilterInstance()
 		{
@@ -77,8 +77,6 @@ namespace vvvv.Nodes.ArcFilter
 			targetAngle = Math.Max(-1, Math.Min(targetAngle, 1));
 			targetAngle = Math.Acos(targetAngle);
 
-			var inDegrees = targetAngle*VMath.RadToDeg;
-
 			var mult = Math.Min((frameTime - FStartTime)/FilterTime, 1.0);
 			Angle = targetAngle*mult;
 
@@ -92,8 +90,8 @@ namespace vvvv.Nodes.ArcFilter
 
 		private Vector3D FindPos(double length, double angle, Vector3D xMult, Vector3D yMult, Vector3D perpendicular)
 		{
-			var x = length * Math.Cos(Angle) * xMult;
-			var y = length * Math.Sin(Angle) * yMult;
+			var x = length * Math.Cos(angle) * xMult;
+			var y = length * Math.Sin(angle) * yMult;
 
 			return x + y + perpendicular;
 		}
@@ -125,10 +123,15 @@ namespace vvvv.Nodes.ArcFilter
 
 		[Import]
 		IHDEHost FHost;
-		private List<ArcFilterInstance> FInstances = new List<ArcFilterInstance>();
+		private readonly List<ArcFilterInstance> FInstances = new List<ArcFilterInstance>();
 		
 		public void Evaluate(int spreadMax)
 		{
+			while (FInstances.Count > spreadMax)
+			{
+				FInstances.RemoveAt(FInstances.Count - 1);
+			}
+
 			for (var i = 0; i < spreadMax; i++)
 			{
 				if(FInstances.Count <  spreadMax) 
