@@ -8,11 +8,6 @@ namespace vvvv.Nodes.ArcFilter
 {
 	public class ArcFilterInstance
 	{
-		private Vector3D FStartPosition;
-		private Vector3D FTargetPos;
-		private double FStartTime;
-		
-
 		public double FilterTime { get; set; }
 		public Vector3D SystemCenter { get; set; }
 		public double Radius { get; set; }
@@ -20,9 +15,72 @@ namespace vvvv.Nodes.ArcFilter
 		public Vector3D Position { get; private set; }
 		public double Angle { get; private set; }
 
+		public EasingDirection EasingDirection { get; set; }
+		public EasingType EasingType { get; set; }
+
 		public ArcFilterInstance()
 		{
 			Position = new Vector3D();
+			FillEasings();
+		}
+
+		private Vector3D FStartPosition;
+		private Vector3D FTargetPos;
+		private double FStartTime;
+
+		private readonly Dictionary<EasingDirection, Dictionary<EasingType, Func<double, double>>> FEasingByDirection =
+			new Dictionary<EasingDirection, Dictionary<EasingType, Func<double, double>>>();
+
+		private void FillEasings()
+		{
+			FEasingByDirection.Add(EasingDirection.In, new Dictionary<EasingType, Func<double, double>>());
+			FEasingByDirection.Add(EasingDirection.InOut, new Dictionary<EasingType, Func<double, double>>());
+			FEasingByDirection.Add(EasingDirection.Out, new Dictionary<EasingType, Func<double, double>>());
+			FEasingByDirection.Add(EasingDirection.OutIn, new Dictionary<EasingType, Func<double, double>>());
+
+			FEasingByDirection[EasingDirection.In].Add(EasingType.Back, Tweener.BackEaseIn);
+			FEasingByDirection[EasingDirection.In].Add(EasingType.Bounce, Tweener.BounceEaseIn);
+			FEasingByDirection[EasingDirection.In].Add(EasingType.Circular, Tweener.CircularEaseIn);
+			FEasingByDirection[EasingDirection.In].Add(EasingType.Cubic, Tweener.CubicEaseIn);
+			FEasingByDirection[EasingDirection.In].Add(EasingType.Elastic, Tweener.ElasticEaseIn);
+			FEasingByDirection[EasingDirection.In].Add(EasingType.Exponential, Tweener.ExponentialEaseIn);
+			FEasingByDirection[EasingDirection.In].Add(EasingType.Quad, Tweener.QuadEaseIn);
+			FEasingByDirection[EasingDirection.In].Add(EasingType.Quartic, Tweener.QuarticEaseIn);
+			FEasingByDirection[EasingDirection.In].Add(EasingType.Quintic, Tweener.QuinticEaseIn);
+			FEasingByDirection[EasingDirection.In].Add(EasingType.Sinusoidal, Tweener.SinusoidalEaseIn);
+
+			FEasingByDirection[EasingDirection.InOut].Add(EasingType.Back, Tweener.BackEaseInOut);
+			FEasingByDirection[EasingDirection.InOut].Add(EasingType.Bounce, Tweener.BounceEaseInOut);
+			FEasingByDirection[EasingDirection.InOut].Add(EasingType.Circular, Tweener.CircularEaseInOut);
+			FEasingByDirection[EasingDirection.InOut].Add(EasingType.Cubic, Tweener.CubicEaseInOut);
+			FEasingByDirection[EasingDirection.InOut].Add(EasingType.Elastic, Tweener.ElasticEaseInOut);
+			FEasingByDirection[EasingDirection.InOut].Add(EasingType.Exponential, Tweener.ExponentialEaseInOut);
+			FEasingByDirection[EasingDirection.InOut].Add(EasingType.Quad, Tweener.QuadEaseInOut);
+			FEasingByDirection[EasingDirection.InOut].Add(EasingType.Quartic, Tweener.QuarticEaseInOut);
+			FEasingByDirection[EasingDirection.InOut].Add(EasingType.Quintic, Tweener.QuinticEaseInOut);
+			FEasingByDirection[EasingDirection.InOut].Add(EasingType.Sinusoidal, Tweener.SinusoidalEaseInOut);
+
+			FEasingByDirection[EasingDirection.Out].Add(EasingType.Back, Tweener.BackEaseOut);
+			FEasingByDirection[EasingDirection.Out].Add(EasingType.Bounce, Tweener.BounceEaseOut);
+			FEasingByDirection[EasingDirection.Out].Add(EasingType.Circular, Tweener.CircularEaseOut);
+			FEasingByDirection[EasingDirection.Out].Add(EasingType.Cubic, Tweener.CubicEaseOut);
+			FEasingByDirection[EasingDirection.Out].Add(EasingType.Elastic, Tweener.ElasticEaseOut);
+			FEasingByDirection[EasingDirection.Out].Add(EasingType.Exponential, Tweener.ExponentialEaseOut);
+			FEasingByDirection[EasingDirection.Out].Add(EasingType.Quad, Tweener.QuadEaseOut);
+			FEasingByDirection[EasingDirection.Out].Add(EasingType.Quartic, Tweener.QuarticEaseOut);
+			FEasingByDirection[EasingDirection.Out].Add(EasingType.Quintic, Tweener.QuinticEaseOut);
+			FEasingByDirection[EasingDirection.Out].Add(EasingType.Sinusoidal, Tweener.SinusoidalEaseOut);
+
+			FEasingByDirection[EasingDirection.OutIn].Add(EasingType.Back, Tweener.BackEaseOutIn);
+			FEasingByDirection[EasingDirection.OutIn].Add(EasingType.Bounce, Tweener.BounceEaseOutIn);
+			FEasingByDirection[EasingDirection.OutIn].Add(EasingType.Circular, Tweener.CircularEaseOutIn);
+			FEasingByDirection[EasingDirection.OutIn].Add(EasingType.Cubic, Tweener.CubicEaseOutIn);
+			FEasingByDirection[EasingDirection.OutIn].Add(EasingType.Elastic, Tweener.ElasticEaseOutIn);
+			FEasingByDirection[EasingDirection.OutIn].Add(EasingType.Exponential, Tweener.ExponentialEaseOutIn);
+			FEasingByDirection[EasingDirection.OutIn].Add(EasingType.Quad, Tweener.QuadEaseOutIn);
+			FEasingByDirection[EasingDirection.OutIn].Add(EasingType.Quartic, Tweener.QuarticEaseOutIn);
+			FEasingByDirection[EasingDirection.OutIn].Add(EasingType.Quintic, Tweener.QuinticEaseOutIn);
+			FEasingByDirection[EasingDirection.OutIn].Add(EasingType.Sinusoidal, Tweener.SinusoidalEaseOutIn);
 		}
 
 		public void Reset()
@@ -78,12 +136,14 @@ namespace vvvv.Nodes.ArcFilter
 			targetAngle = Math.Acos(targetAngle);
 
 			var mult = Math.Min((frameTime - FStartTime)/FilterTime, 1.0);
+			if (EasingDirection != EasingDirection.None)
+			{
+				mult = FEasingByDirection[EasingDirection][EasingType](mult);
+			}
 			Angle = targetAngle*mult;
 
 			var aproxTargetPos = FindPos(length, targetAngle, xMult, yMult, perpendicular);
 			if (aproxTargetPos != FTargetPos) Angle *= -1;
-
-			//Position = FStartPosition + (FTargetPos - FStartPosition) * Math.Min((frameTime - FStartTime) / FilterTime, 1.0);
 
 			Position = FindPos(length, Angle, xMult, yMult, perpendicular);
 		}
@@ -115,16 +175,24 @@ namespace vvvv.Nodes.ArcFilter
 		[Input("Reset", IsBang = true)]
 		private ISpread<bool> FResetIn;
 
+		[Input("Easing Direction", DefaultEnumEntry = "None")] 
+		private ISpread<EasingDirection> FEasingDirectionIn;
+
+		[Input("Easing Type", DefaultEnumEntry = "Back")]
+		private ISpread<EasingType> FEasingTypeIn;
+		
 		[Output("Position Out")] 
 		private ISpread<Vector3D> FPositionOut;
 
 		[Output("Angle")]
 		private ISpread<double> FAngleOut;
 
+		
+
 		[Import]
 		IHDEHost FHost;
 		private readonly List<ArcFilterInstance> FInstances = new List<ArcFilterInstance>();
-		
+
 		public void Evaluate(int spreadMax)
 		{
 
@@ -143,6 +211,8 @@ namespace vvvv.Nodes.ArcFilter
 				FInstances[i].FilterTime = FFilterTimeIn[i];
 				FInstances[i].SystemCenter = FSystemCenterIn[i];
 				FInstances[i].Radius = FRadiusIn[i];
+				FInstances[i].EasingDirection = FEasingDirectionIn[i];
+				FInstances[i].EasingType = FEasingTypeIn[i];
 
 				FInstances[i].Update(FGoToPositionIn[i], FHost.FrameTime);
 
@@ -152,5 +222,28 @@ namespace vvvv.Nodes.ArcFilter
 				FAngleOut[i] = FInstances[i].Angle;
 			}	
 		}
+	}
+
+	public enum EasingDirection
+	{
+		None,
+		In,
+		InOut,
+		Out,
+		OutIn
+	}
+
+	public enum EasingType
+	{
+		Back,
+		Bounce,
+		Circular,
+		Cubic,
+		Elastic,
+		Exponential,
+		Quad,
+		Quartic,
+		Quintic,
+		Sinusoidal
 	}
 }
