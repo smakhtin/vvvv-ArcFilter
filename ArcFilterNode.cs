@@ -127,6 +127,9 @@ namespace vvvv.Nodes.ArcFilter
 		
 		public void Evaluate(int spreadMax)
 		{
+
+			FPositionOut.SliceCount = FAngleOut.SliceCount = spreadMax;
+
 			while (FInstances.Count > spreadMax)
 			{
 				FInstances.RemoveAt(FInstances.Count - 1);
